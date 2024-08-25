@@ -1,0 +1,146 @@
+{% extends 'BuyKaro/basic.html' %}
+
+{% block title %}
+  {{ product.name }}
+{% endblock %}
+
+{% load static %}
+{% block body %}
+  <section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+        <div class="col-md-6">
+          <img class="card-img-top mb-5 mb-md-0" src="{{ product.image.url }}" alt="..." />
+        </div>
+        <div class="col-md-6">
+          <div class="small mb-1">BuyKaro</div>
+          <h1 class="display-5 fw-bolder" style="font-family: sans-serif; font-size:xx-large;">{{ product.name }}</h1>
+          <div class="fs-5 mb-5">
+            {% if product.on_sale %}
+              <strike>RS.{{ product.price }} PKR</strike>
+              RS.{{ product.sale_price }} PKR
+            {% else %}
+              RS. {{ product.price }} PKR
+            {% endif %}
+            <br /><br />
+            <div class="row justify">
+              <div class="col-md-2">Quantity:</div>
+              <div class="col-md-2">
+                <select class="form-select form-select-sm" id="qty-cart">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+            </div>
+            <div class="row"></div>
+            <br />
+            <p class="lead">{{ product.description }}</p>
+          </div>
+          <div class="d-flex">
+            <button class="btn btn-outline-dark" type="button" value="{{ product.id }}" id="add-cart">
+              <i class="bi-cart-fill me-1"></i>
+              Add to cart
+            </button>
+            <br>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Related items section-->
+   <div class="container" style="padding-top: 20px; font-family: sans-serif;">
+    <h1>Related Products</h1>
+  </div>
+
+  <section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        {% for product in products %}
+          {% if product.catagory == product_cat %}
+            {% if product.on_sale %}
+              <div class="col mb-5">
+                <div class="card h-100">
+                  <!-- Product image -->
+                  <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
+                  <!-- Product details -->
+                  <div class="card-body p-4">
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                    <div class="text-center">
+                      <!-- Product name -->
+                      <h6>{{ product.name }}</h6>
+                      <!-- Product price -->
+                      <strike>Rs.{{ product.price }}PKR</strike>
+                      <h6>Rs.{{ product.sale_price }}PKR</h6>
+                    </div>
+                  </div>
+                  <!-- Product actions -->
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                      <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View Product</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <div class="col mb-5">
+                <div class="card h-100">
+                  <!-- Product image -->
+                  <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
+                  <!-- Product details -->
+                  <div class="card-body p-4">
+                    <div class="text-center">
+                      <!-- Product name -->
+                      <h6>{{ product.name }}</h6>
+                      <!-- Product price -->
+                      <h6>Rs. {{ product.price }} PKR</h6>
+                    </div>
+                  </div>
+                  <!-- Product actions -->
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                      <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View Product</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+<script>
+    // lets check the button pressed
+
+    $(document).on('click','#add-cart',function(e)
+      {
+          e.preventDefault();
+          $.ajax(
+          {
+            type: 'POST',
+            url:  '{% url 'cart_add'%}',
+            data: 
+            {
+              product_id : $('#add-cart').val(),
+              product_qty : $('#qty-cart option:selected').text(),
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              action: 'post'
+
+            },
+            success: function(json)
+            {
+              document.getElementById('cart_quantity').textContent=json.qty
+              location.reload();
+            },
+            error: function(xhr,errmsg,err)
+            {
+              
+            }
+          })
+      });
+  </script>
+{% endblock %}

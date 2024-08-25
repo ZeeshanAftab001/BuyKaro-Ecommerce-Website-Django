@@ -1,0 +1,134 @@
+{% extends 'BuyKaro/basic.html' %}
+{% block title %}Login - BuyKaro{% endblock title %}
+{% block body %}
+<header class="bg-dark py-5" style="color: black;">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Update</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Please Update Your Profile</p>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-md-6">
+                <br>
+            </div>
+             <form method="POST" action="{% url "update" %}">
+                {% csrf_token %}
+                {{user_form.as_p}}
+                <br><br>
+
+                <button type="submit" class="btn btn-primary">
+                    Update Profile
+                </button>
+
+            </form> 
+            <br>
+            <br>
+            <a href="{% url 'update_password' %}">Update Password</a>
+            <br>
+    </div>
+     </center>
+</div>
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Buy Now</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* CSS for button animation */
+        .shaking-btn {
+            display: inline-block;
+            animation: tiltPause 0.30s ease-in-out infinite;
+        }
+
+        @keyframes tiltPause {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            50% { transform: rotate(8deg); }
+            75% { transform: rotate(-8deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .paused {
+            animation: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Button -->
+<button type="submit" class="shaking-btn btn-5 h-42 mb-3 home-modal-order-btn" onclick="quick_buynow()" data-bs-toggle="modal" data-bs-target="#quick_buynow_modal">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-fill me-2 mb-1" viewBox="0 0 16 16">
+        <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"></path>
+    </svg>
+    Order Now - Cash on Delivery
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="quick_buynow_modal" tabindex="-1" aria-labelledby="quick_buynow_modal_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quick_buynow_modal_label">Quick Buy Now</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal body content goes here -->
+                <p>Please confirm your purchase details.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JavaScript Function -->
+<script>
+let cycleCount = 0;
+const maxCycles = 2.5;
+const pauseDuration = 1000; // 2 seconds in milliseconds
+
+function quick_buynow() {
+    console.log("Quick buy now button clicked");
+    // Additional functionality can be added here
+}
+
+// Function to handle animation and pause
+function handleAnimation() {
+    const button = document.querySelector('.shaking-btn');
+    button.classList.remove('paused');
+    cycleCount++;
+    if (cycleCount >= maxCycles) {
+        setTimeout(() => {
+            button.classList.add('paused');
+            setTimeout(() => {
+                cycleCount = 0;
+                button.classList.remove('paused');
+            }, pauseDuration);
+        }, button.style.animationDuration * maxCycles);
+    }
+}
+
+// Attach the function to button animation end
+document.querySelector('.shaking-btn').addEventListener('animationiteration', handleAnimation);
+</script>
+
+</body>
+</html>
+
+
+{% endblock body %}

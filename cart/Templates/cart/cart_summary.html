@@ -1,0 +1,183 @@
+{% extends 'BuyKaro/basic.html' %}
+
+{% load static %}
+
+{% block title %}
+  BuyKaro | Online Shopping
+{% endblock %}
+{% block body %}
+  <header class="bg-dark py-5" style="color: black;">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+        <h1 class="display-4 fw-bolder">Cart</h1>
+        <p class="lead fw-normal text-white-50 mb-0">Items in your cart</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <br />
+    {% if cart_products %}
+      {% for product in cart_products %}
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="..." />
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <center>
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <br />
+                  <p class="card-text justified">{{ product.description }}</p>
+
+                  {% if product.on_sale %}
+                    <div class="d-flex justify-content-center small text-warning mb-2">
+                      <div class="bi-star-fill"></div>&nbsp;&nbsp;Sale!&nbsp;&nbsp;<div class="bi-star-fill"></div>
+                    </div>
+
+                    <!-- Product price -->
+                    <strike>Rs.{{ product.price }} PKR</strike>
+                    <h6>Rs.{{ product.sale_price }} PKR</h6> 
+                  {% else %}
+                    Rs.{{ product.price }} PKR
+                  {% endif %}
+                  <br /><br />
+                  <br />
+                  <br />
+
+                  <div class="row justify">
+                    <div class="col-md-2">Quantity:</div>
+                    <div class="col-md-2">
+                      <select class="form-select form-select-sm" id="select{{ product.id }}">
+                        {% for key, value in quantities.items %}
+                        {% if key == product.id|slugify %}
+                        <option selected>{{ value }}</option>
+                        {% endif %}
+                        {% endfor %}
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                      </select>
+                    </div>
+                  </div>
+                  <a href="{% url 'home' %}" class="btn btn-secondary update-cart">Home</a>
+                  <button type="button" data-index="{{ product.id }}" class="btn btn-secondary update-cart">Update</button>
+                  <button type="button" data-index="{{ product.id }}" class="btn btn-danger delete-product">Remove</button>
+                  <br /><br />
+                </center>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">Total Amount</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">Rs.{{totals}}<small class="text-muted fw-light">/PKR</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+              </ul>
+
+              <br>
+              <br>
+              <br>
+              <br>
+            <a href="{% url 'checkout' %}" type="btn">checkout</a>
+            </div>
+          </div>
+        </div>
+    {% else %}
+      <div class="container-fluid d-flex flex-column justify-content-center align-items-center" style="height: 50vh; text-align: center;">
+        <div class="d-flex flex-column justify-content-center align-items-center" style="max-width: 300px; width: 100%; padding: 20px; margin-top: auto; margin-bottom: auto;">
+          <p class="lead fw-bolder text-dark-50 mb-0" style="font-size: 1.5rem;">Cart is Empty</p>
+          <a href="{% url 'home' %}" class="btn btn-secondary px-3 mt-3">Continue Shopping</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  
+    </div>
+  <br />
+
+  <br />
+
+  <br />
+
+  <br />
+
+  <br />
+
+  <br />
+
+  <script>
+    // Update Cart
+    $(document).on('click', '.update-cart', function(e){
+        e.preventDefault();
+        // grab the product id
+        var productid = $(this).data('index');
+    
+        $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_update' %}',
+        data: {
+          product_id: $(this).data('index'),
+          product_qty: $('#select' + productid + ' option:selected').text(),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          action: 'post'
+        },
+        success: function(json){
+            //console.log(json)
+            //document.getElementById("cart_quantity").textContent = json.qty
+            location.reload();
+        },
+    
+        error: function(xhr, errmsg, err){
+    
+        }
+    
+    
+        });
+    
+    })
+
+
+
+// Delete Item From Cart
+$(document).on('click', '.delete-product', function(e){
+  e.preventDefault();
+  // grab the product id
+  //var productid = $(this).data('index');
+
+  $.ajax({
+  type: 'POST',
+  url: '{% url 'cart_delete' %}',
+  data: {
+    product_id: $(this).data('index'),
+    csrfmiddlewaretoken: '{{ csrf_token }}',
+    action: 'post'
+  },
+  success: function(json){
+      //console.log(json)
+      //document.getElementById("cart_quantity").textContent = json.qty
+      location.reload();
+  },
+
+  error: function(xhr, errmsg, err){
+
+  }
+
+
+});
+
+})
+
+
+
+
+</script>
+{% endblock %}

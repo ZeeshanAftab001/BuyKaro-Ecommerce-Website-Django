@@ -1,0 +1,51 @@
+{% extends 'BuyKaro/basic.html' %}
+{% block title %}Update Info{% endblock title %}
+{% block body %}
+<header class="bg-dark py-5" style="color: black;">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Billing Info</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Please enter Your Information</p>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-md-6">
+                <br>
+                <br>
+            </div>
+            {{cart_products}}
+            <form action='{% url "order_now" %}'method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1"  class="form-label">Name</label>
+                    <input type="text" class="form-control" name="fname" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" name="lname"="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email"="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Phone</label>
+                    <input type="number" class="form-control" name="phone"="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label"><Address></Address></label>
+                    <input type="number" class="form-control" name="address"="exampleFormControlInput1" placeholder="name@example.com">
+                  </div>
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+            <br>
+            <br>
+            <br>
+    </div>
+     </center>
+</div>
+</div>
+{% endblock body %}
